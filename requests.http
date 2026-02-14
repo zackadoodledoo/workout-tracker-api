@@ -1,0 +1,57 @@
+###
+GET http://localhost:3000/api/workouts HTTP/1.1
+
+###
+GET http://localhost:3000/api/workouts/69901a1a9deedf44b965cc80 HTTP/1.1
+
+###
+POST http://localhost:3000/api/workouts HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Morning Run",
+    "type": "cardio",
+    "duration": 30,
+    "date": "2024-06-01T07:00:00.000Z"
+}
+
+### Get all workouts
+GET http://localhost:3000/api/workouts HTTP/1.1
+
+### Add a new workout
+POST http://localhost:3000/api/workouts HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Evening Yoga",
+    "type": "flexibility",
+    "duration": 45,
+    "date": "2024-06-01T18:00:00.000Z"
+}
+
+###
+POST http://localhost:3000/api/workouts
+Content-Type: application/json
+
+{
+    "name": "Initial Test",
+    "type": "strength",
+    "duration": 30,
+    "date": "2024-06-01T07:00:00.000Z"
+}
+
+### Update a specific workout (PUT)
+PUT http://localhost:3000/api/workouts HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Updated Morning Run",
+    "type": "cardio",
+    "duration": 40,
+    "date": "2024-06-01T07:00:00.000Z"
+}
+
+### Delete a specific workout
+DELETE http://localhost:3000/api/workouts/69901a1a9deedf44b965cc80 HTTP/1.1
+
+

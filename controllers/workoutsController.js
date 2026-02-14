@@ -31,12 +31,8 @@ export const createWorkout = async (req, res) => {
         const workout = {
             name: req.body.name,
             duration: req.body.duration,
-            caloriesBurned: req.body.caloriesBurned,
             date: req.body.date,
-            intensity: req.body.intensity,
-            type: req.body.type,
-            notes: req.body.notes,
-            userId: req.body.userId,
+            type: req.body.type
         };
 
         

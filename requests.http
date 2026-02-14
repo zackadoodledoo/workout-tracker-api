@@ -52,6 +52,10 @@ Content-Type: application/json
 }
 
 ### Delete a specific workout
-DELETE http://localhost:3000/api/workouts/69901a1a9deedf44b965cc80 HTTP/1.1
+DELETE http://localhost:3000/api/workouts/69901d914d3129e32fa10943 HTTP/1.1
 
+### Delete a specific workout
+DELETE http://localhost:3000/api/workouts/69902178c85ef63ed865a2a5 HTTP/1.1
 
+###
+DELETE http://localhost:3000/api/workouts/69902539a6724a241b2da524 HTTP/1.1

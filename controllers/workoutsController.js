@@ -1,114 +1,79 @@
-import mongodb from '../data/database.js'; // Added .js extension
-import { ObjectId } from 'mongodb';       // Destructured import
-
-// GET all workouts
-export const getAll = async (req, res) => {
-    const result = await mongodb.getDb().db().collection('workouts').find();
-    const workouts = await result.toArray();
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).json(workouts);
-};
-
-// GET single workout
-export const getSingle = async (req, res) => {
-    try {
-        const workoutId = new ObjectId(req.params.id);
-        const result = await mongodb 
-            .getDb()
-            .db()
-            .collection('workouts')
-            .find({ _id: workoutId });
-        const workout = await result.toArray();
-        res.status(200).json(workout[0]);
-    } catch (err) {
-        res.status(500).json({ error: err.message});
-    }
-};
-
-// POST create workout
-export const createWorkout = async (req, res) => {
-    try {
-        const workout = {
-            name: req.body.name,
-            duration: req.body.duration,
-            date: req.body.date,
-            type: req.body.type
-        };
-
-        
-        const response = await mongodb
-            .getDb()
-            .db()
-            .collection('workouts')
-            .insertOne(workout);
-
-        if (response.acknowledged) {
-            // Return the new ID so you can use it in PUT/DELETE
-            res.status(201).json(response);
-        } else {
-            res.status(500).json({ message: 'Error occurred while creating the workout.' });
-        }
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-
-
-// PUT update workout
-export const updateWorkout = async (req, res) => {
-  try {
-    const workoutId = new ObjectId(req.params.id);
-    const workout = {
-      name: req.body.name,
-      duration: req.body.duration,
-      caloriesBurned: req.body.caloriesBurned,
-      date: req.body.date,
-      intensity: req.body.intensity,
-      type: req.body.type,
-      notes: req.body.notes,
-      userId: req.body.userId
-    };
-
-    const response = await mongodb
-      .getDb()
-      .db()
-      .collection('workouts')
-      .replaceOne({ _id: workoutId }, workout);
-
-    if (response.modifiedCount > 0) {
-      res.status(204).send();
-    } else {
-      res.status(404).json({ message: 'Workout not found' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// DELETE workout
-export const deleteWorkout = async (req, res) => {
-  try {
-    const workoutId = new ObjectId(req.params.id);
-    const response = await mongodb
-      .getDb()
-      .db()
-      .collection('workouts')
-      .deleteOne({ _id: workoutId });
-
-    if (response.deletedCount > 0) {
-      res.status(200).json({ message: 'Workout deleted' });
-    } else {
-      res.status(404).json({ message: 'Workout not found' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+import { validationResult } from 'express-validator';
+import mongodb from '../data/database.js';
+import { ObjectId } from 'mongodb';
 
 export default {
-    getAll,
-    getSingle,
-    createWorkout,
-    updateWorkout,
-    deleteWorkout 
+  getAll: async (req, res) => {
+    try {
+      const db = mongodb.getDb().db();
+      const workouts = await db.collection('workouts').find().toArray();
+      res.status(200).json(workouts);
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message });
+    }
+  },
+
+  getSingle: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const db = mongodb.getDb().db();
+      const workout = await db.collection('workouts').findOne({ _id: new ObjectId(id) });
+
+      if (!workout) return res.status(404).json({ message: 'Workout not found' });
+
+      res.status(200).json(workout);
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message });
+    }
+  },
+
+  createWorkout: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+      const db = mongodb.getDb().db();
+      const result = await db.collection('workouts').insertOne(req.body);
+
+      res.status(201).json({ id: result.insertedId });
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message });
+    }
+  },
+
+  updateWorkout: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+      const id = req.params.id;
+      const db = mongodb.getDb().db();
+
+      const result = await db.collection('workouts').updateOne(
+        { _id: new ObjectId(id) },
+        { $set: req.body }
+      );
+
+      if (result.matchedCount === 0) return res.status(404).json({ message: 'Workout not found' });
+
+      res.sendStatus(204);
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message });
+    }
+  },
+
+  deleteWorkout: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const db = mongodb.getDb().db();
+
+      const result = await db.collection('workouts').deleteOne({ _id: new ObjectId(id) });
+
+      if (result.deletedCount === 0) return res.status(404).json({ message: 'Workout not found' });
+
+      res.sendStatus(200);
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message });
+    }
+  }
 };

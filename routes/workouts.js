@@ -1,21 +1,47 @@
 import express from 'express';
 import workoutsController from '../controllers/workoutsController.js';
+import { workoutValidationRules } from '../validation/workoutValidation.js';
 
 const router = express.Router();
 
-// 1. GET ALL Workouts (Points to the logic in your Controller)
+/**
+ * @swagger
+ * /api/workouts:
+ *   get:
+ *     summary: Get all workouts
+ */
 router.get('/', workoutsController.getAll);
 
-// 2. GET SINGLE Workout by ID
+/**
+ * @swagger
+ * /api/workouts/{id}:
+ *   get:
+ *     summary: Get a workout by ID
+ */
 router.get('/:id', workoutsController.getSingle);
 
-// 3. CREATE a New Workout
-router.post('/', workoutsController.createWorkout);
+/**
+ * @swagger
+ * /api/workouts:
+ *   post:
+ *     summary: Create a new workout
+ */
+router.post('/', workoutValidationRules, workoutsController.createWorkout);
 
-// 4. UPDATE a Workout
-router.put('/:id', workoutsController.updateWorkout);
+/**
+ * @swagger
+ * /api/workouts/{id}:
+ *   put:
+ *     summary: Update a workout
+ */
+router.put('/:id', workoutValidationRules, workoutsController.updateWorkout);
 
-// 5. DELETE a Workout
-router.delete('/:id', workoutsController.deleteWorkout); 
+/**
+ * @swagger
+ * /api/workouts/{id}:
+ *   delete:
+ *     summary: Delete a workout
+ */
+router.delete('/:id', workoutsController.deleteWorkout);
 
 export default router;

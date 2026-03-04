@@ -1,6 +1,9 @@
 import express from 'express';
 import workoutsController from '../controllers/workoutsController.js';
 import { workoutValidationRules } from '../validation/workoutValidation.js';
+import { isAuthenticated } from '../auth/isAuthenticated.js';
+
+
 
 const router = express.Router();
 
@@ -26,7 +29,7 @@ router.get('/:id', workoutsController.getSingle);
  *   post:
  *     summary: Create a new workout
  */
-router.post('/', workoutValidationRules, workoutsController.createWorkout);
+router.post('/', isAuthenticated, workoutValidationRules, workoutsController.createWorkout);
 
 /**
  * @swagger
@@ -34,7 +37,7 @@ router.post('/', workoutValidationRules, workoutsController.createWorkout);
  *   put:
  *     summary: Update a workout
  */
-router.put('/:id', workoutValidationRules, workoutsController.updateWorkout);
+router.put('/:id', isAuthenticated, workoutValidationRules, workoutsController.updateWorkout);
 
 /**
  * @swagger
@@ -42,6 +45,6 @@ router.put('/:id', workoutValidationRules, workoutsController.updateWorkout);
  *   delete:
  *     summary: Delete a workout
  */
-router.delete('/:id', workoutsController.deleteWorkout);
+router.delete('/:id', isAuthenticated, workoutsController.deleteWorkout);
 
 export default router;

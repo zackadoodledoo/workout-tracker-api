@@ -20,6 +20,10 @@ app.use(express.json());
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Workout Tracker API is running' });
+});
+
 // API Routes
 app.use('/api/workouts', workoutRoutes);
 
@@ -37,3 +41,4 @@ mongodb.initDb(async (err) => {
     }
   }
 });
+

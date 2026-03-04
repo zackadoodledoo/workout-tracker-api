@@ -6,6 +6,16 @@
     "version": "1.0.0"
   },
   "host": "localhost:3000",
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    },
+    {
+      "url": "https://workout-tracker-api-ns8z.onrender.com",
+      "description": "Production server (Render)"
+    }
+  ],
   "basePath": "/",
   "schemes": [
     "http"
